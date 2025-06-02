@@ -1,0 +1,14 @@
+langfuse
+fastapi
+uvicorn
+autogen-agentchat
+autogen-ext[azure]
+aiohttp
+langchain-neo4j
+langchain-openai
+llama_cloud_services
+llama-index-embeddings-huggingface
+json_schema_to_pydantic
+python-multipart
+elasticsearch==8.17.1
+mcp[cli]

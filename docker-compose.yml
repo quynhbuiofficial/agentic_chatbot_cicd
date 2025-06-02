@@ -1,0 +1,130 @@
+name: "quynhbui"
+services:
+  chatbot_frontend:
+    # build: ./chatbot/chatbot_frontend
+    image: quynhbui-chatbot_frontend:latest
+    container_name: chatbot_frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_LANGFUSE_SECRET_KEY=
+      - VITE_LANGFUSE_PUBLIC_KEY=
+      - VITE_LANGFUSE_BASEURL=https://cloud.langfuse.com
+
+      # - VITE_API_URL=http://chatbot_backend:9999
+      - VITE_API_URL=http://localhost:9999
+      # - VITE_API_URL=http://chatbot_backend_test:9999
+
+    networks:
+      - chatbot_network
+    depends_on:
+      chatbot_backend:
+        condition: service_started
+
+  chatbot_backend:
+    # build: ./chatbot/chatbot_backend
+    image: quynhbui-chatbot_backend:latest
+    container_name: chatbot_backend
+    ports:
+      - "9999:9999"
+    environment:
+      - LANGFUSE_PUBLIC_KEY=
+      - LANGFUSE_SECRET_KEY=
+      - LANGFUSE_BASEURL=https://cloud.langfuse.com
+
+      - GITHUB_TOKEN= #quynhsydaole
+
+      - MODEL_NAME=gpt-4o
+      # - MODEL_NAME=gpt-4.1
+      # - MODEL_NAME=gpt-4o-mini
+      - MODEL_CHAT_INPUT_COST=0.0001
+      - MODEL_CHAT_OUTPUT_COST=0.0001
+
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+
+      - NEO4J_URL=bolt://neo4j:7687
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=123456789
+
+      - MCP_SERVER_URL=http://mcp_server:1234/sse
+    depends_on:
+      - elasticsearch
+      - mcp_server
+      - neo4j
+    networks:
+      - chatbot_network
+
+  mcp_server:
+    # build: ./mcp_server_manager
+    image: quynhbui-mcp_server:latest
+    container_name: mcp_server
+    ports:
+      - "1234:1234"
+    environment:
+      - LANG=C.UTF-8
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - chatbot_network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=trial
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      # - quynhbui_elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - chatbot_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 30s
+      retries: 1
+      start_period: 100s
+
+  neo4j:
+    image: neo4j:2025.04
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/123456789
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    volumes:
+      - neo4j_data:/data
+      # - quynhbui_neo4j_data:/data
+      - neo4j_logs:/logs
+      # - quynhbui_neo4j_logs:/logs
+    networks:
+      - chatbot_network
+
+volumes:
+  elasticsearch-data:
+  # quynhbui_elasticsearch-data:
+    external: true
+  neo4j_data:
+  # quynhbui_neo4j_data:
+    external: true
+  neo4j_logs:
+  # quynhbui_neo4j_logs:
+    external: true
+
+networks:
+  chatbot_network:
+    name: chatbot_network
+    driver: bridge

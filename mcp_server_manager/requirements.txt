@@ -1,0 +1,7 @@
+sentence_transformers
+elasticsearch==8.17.1
+duckduckgo_search==6.4.2
+wikipedia
+fastapi
+uvicorn
+mcp[cli]
