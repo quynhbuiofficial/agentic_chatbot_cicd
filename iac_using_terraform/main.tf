@@ -11,33 +11,33 @@ resource "aws_vpc" "vpc_ne" {
   }
 }
 
-locals {
-  availability_zones = ["${var.aws_region}a", "${var.aws_region}b"]
-}
+# locals {
+#   availability_zones = ["${var.aws_region}a", "${var.aws_region}b"]
+# }
 
-# Public subnet
-resource "aws_subnet" "public_subnets" {
-  vpc_id                  = aws_vpc.vpc_ne.id
-  count                   = length(var.public_subnets_cidr)
-  cidr_block              = element(var.public_subnets_cidr, count.index)
-  availability_zone       = element(local.availability_zones, count.index)
-  map_public_ip_on_launch = true
+# # Public subnet
+# resource "aws_subnet" "public_subnets" {
+#   vpc_id                  = aws_vpc.vpc_ne.id
+#   count                   = length(var.public_subnets_cidr)
+#   cidr_block              = element(var.public_subnets_cidr, count.index)
+#   availability_zone       = element(local.availability_zones, count.index)
+#   map_public_ip_on_launch = true
 
-  tags = {
-    Name = "${var.enviroment}-${element(local.availability_zones, count.index)}-public-subnet"
-  }
-}
-# Private Subnet
-resource "aws_subnet" "private_subnet" {
-  vpc_id                  = aws_vpc.vpc_ne.id
-  cidr_block              = var.private_subnet_cidr
-  availability_zone       = local.availability_zones[0]
-  map_public_ip_on_launch = false
+#   tags = {
+#     Name = "${var.enviroment}-${element(local.availability_zones, count.index)}-public-subnet"
+#   }
+# }
+# # Private Subnet
+# resource "aws_subnet" "private_subnet" {
+#   vpc_id                  = aws_vpc.vpc_ne.id
+#   cidr_block              = var.private_subnet_cidr
+#   availability_zone       = local.availability_zones[0]
+#   map_public_ip_on_launch = false
 
-  tags = {
-    Name = "${var.enviroment}-${local.availability_zones[0]}-private-subnet"
-  }
-}
+#   tags = {
+#     Name = "${var.enviroment}-${local.availability_zones[0]}-private-subnet"
+#   }
+# }
 
 # # IGW
 # resource "aws_internet_gateway" "igw" {
