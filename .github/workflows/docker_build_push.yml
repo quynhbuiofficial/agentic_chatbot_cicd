@@ -5,7 +5,7 @@ on:
 
 jobs:
   build_push_images:
-    name: Build Images To DockerHub
+    name: Build & Push Images To DockerHub
     runs-on: ubuntu-latest
     steps:
     - name: Checkout github repository
