@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket  = "chatbot-terraform-state"
+    bucket  = "qbui-chatbot-tf-state"
     region  = "us-east-1"
     key     = "s3-github-actions/terraform.tfstate"
     encrypt = true
