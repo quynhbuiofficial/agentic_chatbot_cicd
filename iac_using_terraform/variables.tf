@@ -4,24 +4,24 @@ variable "ec2_frontend_name" {
 }
 
 variable "ec2_backend_name" {
-  type = string
+  type    = string
   default = "chatbot-backend"
 }
 
 variable "ec2_services_name" {
   type = list(string)
-  default = ["chatbot-elasticsearch","chatbot-mcp-server", 
+  default = ["chatbot-elasticsearch", "chatbot-mcp-server",
   "chatbot-neo4j"]
 }
 
 variable "ec2_types" {
   type    = list(string)
-  default = [ "t2.medium", "t2.small", "t2.micro"]
+  default = ["t2.medium", "t2.small", "t2.micro"]
 }
 
 variable "ec2_storages" {
   type    = list(number)
-  default = [ 13, 13, 8]
+  default = [13, 13, 8]
 }
 
 variable "aws_region" {
