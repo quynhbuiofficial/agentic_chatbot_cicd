@@ -37,7 +37,7 @@ jobs:
       run: terraform fmt 
     
     - name: Terraform Validation
-      run: terraform Validation
+      run: terraform validation
 
     - name: Terraform Plan
       run: terraform plan -out=tfplan
