@@ -2,92 +2,42 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Create s3
-resource "aws_s3_bucket" "bucket" {
-  bucket = "terraform-state"
-}
+# Create VPC
+resource "aws_vpc" "vpc_ne" {
+  cidr_block = var.vpc_cidr
 
-resource "aws_s3_bucket_ownership_controls" "bucket_controls" {
-  bucket = aws_s3_bucket.bucket.id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
+  tags = {
+    Name = "${var.enviroment}-vpc"
   }
 }
 
-resource "aws_s3_bucket_acl" "bucket_acl" {
-  depends_on = [aws_s3_bucket_ownership_controls.bucket_controls]
-  bucket     = aws_s3_bucket.bucket.id
-  acl        = "private"
-}
-# Auto
-resource "aws_s3_bucket_public_access_block" "bucket_pacb" {
-  bucket = aws_s3_bucket.bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+locals {
+  availability_zones = ["${var.aws_region}a", "${var.aws_region}b"]
 }
 
-resource "aws_s3_bucket_versioning" "bucket_versioning" {
-  bucket = aws_s3_bucket.bucket.id
-  versioning_configuration {
-    status = "Enable"
+# Public subnet
+resource "aws_subnet" "public_subnets" {
+  vpc_id                  = aws_vpc.vpc_ne.id
+  count                   = length(var.public_subnets_cidr)
+  cidr_block              = element(var.public_subnets_cidr, count.index)
+  availability_zone       = element(local.availability_zones, count.index)
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.enviroment}-${element(local.availability_zones, count.index)}-public-subnet"
   }
 }
+# Private Subnet
+resource "aws_subnet" "private_subnet" {
+  vpc_id                  = aws_vpc.vpc_ne.id
+  cidr_block              = var.private_subnet_cidr
+  availability_zone       = local.availability_zones[0]
+  map_public_ip_on_launch = false
 
-resource "aws_kms_key" "key" {
-  description             = "This key is used to encrypt bucket objects"
-  enable_key_rotation     = true
-  deletion_window_in_days = 7
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "name" {
-  bucket = aws_s3_bucket.bucket.id
-  rule {
-    apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.key.arn
-      sse_algorithm     = "aws:kms"
-    }
+  tags = {
+    Name = "${var.enviroment}-${local.availability_zones[0]}-private-subnet"
   }
 }
-
-# # Create VPC
-# resource "aws_vpc" "vpc_ne" {
-#   cidr_block = var.vpc_cidr
-
-#   tags = {
-#     Name = "${var.enviroment}-vpc"
-#   }
-# }
-
-# locals {
-#   availability_zones = ["${var.aws_region}a", "${var.aws_region}b"]
-# }
-
-# # Public subnet
-# resource "aws_subnet" "public_subnets" {
-#   vpc_id                  = aws_vpc.vpc_ne.id
-#   count                   = length(var.public_subnets_cidr)
-#   cidr_block              = element(var.public_subnets_cidr, count.index)
-#   availability_zone       = element(local.availability_zones, count.index)
-#   map_public_ip_on_launch = true
-
-#   tags = {
-#     Name = "${var.enviroment}-${element(local.availability_zones, count.index)}-public-subnet"
-#   }
-# }
-# # Private Subnet
-# resource "aws_subnet" "private_subnet" {
-#   vpc_id                  = aws_vpc.vpc_ne.id
-#   cidr_block              = var.private_subnet_cidr
-#   availability_zone       = local.availability_zones[0]
-#   map_public_ip_on_launch = false
-
-#   tags = {
-#     Name = "${var.enviroment}-${local.availability_zones[0]}-private-subnet"
-#   }
-# }
 
 # # IGW
 # resource "aws_internet_gateway" "igw" {
