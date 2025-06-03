@@ -17,7 +17,7 @@ jobs:
         docker build ./chatbot/chatbot_backend -t quynhsydaole/chatbot_backend:latest
         docker build ./chatbot/chatbot_frontend -t quynhsydaole/chatbot_frontend:latest
     
-    - name: Push Image 
+    - name: Push Images
       run: |
         docker login -u quynhsydaole -p ${{secrets.DOCKER_HUB_TOKEN}}
         docker push quynhsydaole/mcp_server:latest
