@@ -4,7 +4,7 @@ provider "aws" {
 
 # Create s3
 resource "aws_s3_bucket" "bucket" {
-  bucket = "chatbot-tf-bucket"
+  bucket = "terraform-state"
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_controls" {
