@@ -44,7 +44,7 @@ jobs:
             --bucket "$BUCKET_NAME" \
             --region "$REGION" 
 
-          echo "🔒 Blocking public access"
+          echo "Setup Permissions Blocking public access for security"
           aws s3api put-public-access-block --bucket "$BUCKET_NAME" --public-access-block-configuration '{
             "BlockPublicAcls": true,
             "IgnorePublicAcls": true,
