@@ -1,0 +1,25 @@
+name: Docker Build & Push
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_push_images:
+    name: Build Images To DockerHub
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout github repository
+      uses: actions/checkout@v4
+
+    - name: Build Images mcp_server
+      run: |
+        docker build ./mcp_server_manager -t quynhsydaole/mcp_server:latest
+        docker build ./chatbot/chatbot_backend -t quynhsydaole/chatbot_backend:latest
+        docker build ./chatbot/chatbot_frontend -t quynhsydaole/chatbot_frontend:latest
+    
+    - name: Push Image mcp_server
+      run: |
+        docker login -u quynhsydaole -p ${{secrets.DOCKER_HUB_TOKEN}}
+        docker push quynhsydaole/mcp_server:latest
+        docker push quynhsydaole/chatbot_backend:latest
+        docker push quynhsydaole/chatbot_frontend:latest

@@ -15,7 +15,7 @@ jobs:
       TF_VERSION: '1.12.1'
 
     steps:
-    - name: 'checkout github responstory'
+    - name: 'checkout github repository'
       uses: actions/checkout@v4
 
     - name: 'Configure AWS credentials'
