@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform Deploy
 
 on:
   workflow_dispatch:
