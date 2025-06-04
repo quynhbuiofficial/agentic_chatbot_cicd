@@ -46,7 +46,7 @@ jobs:
         EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)
         echo "$EC2_IP"
         echo "KAKAKA: "
-        echo "EC2_PUBLIC_IP=$EC2_IP" >> "$GITHUB_ENV"
+        echo "EC2_PUBLIC_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)" >> "$GITHUB_ENV"
 
     # - name: Sử dụng EC2_PUBLIC_IP
     #   run: |
