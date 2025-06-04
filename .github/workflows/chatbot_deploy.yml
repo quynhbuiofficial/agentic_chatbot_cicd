@@ -43,10 +43,10 @@ jobs:
         head -n 5 keypair.pem
 
         cd iac_using_terraform
-        EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)
+        EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1 | tr -d '\r\n')
         echo "$EC2_IP"
         echo "KAKAKA: $EC2_IP"
-        echo "EC2_PUBLIC_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)" >> "$GITHUB_ENV"
+        echo "EC2_PUBLIC_IP=$EC2_IP" >> "$GITHUB_ENV"
 
     # - name: Sử dụng EC2_PUBLIC_IP
     #   run: |
