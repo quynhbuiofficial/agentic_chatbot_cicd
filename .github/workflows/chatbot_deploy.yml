@@ -43,9 +43,8 @@ jobs:
         head -n 5 keypair.pem
 
         cd iac_using_terraform
-        EC2_IP=$(terraform output -raw aws_frontend_ip)
+        EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)
         echo "EC2_PUBLIC_IP=$EC2_IP" >> $GITHUB_ENV
-        echo "EC2_IP from env: $EC2_IP"
         echo "EC2_PUBLIC_IP from env: $EC2_PUBLIC_IP"
 
     - name: Pull & Run Image chatbot_frontend from DockerHub in EC2
