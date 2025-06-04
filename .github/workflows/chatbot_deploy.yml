@@ -44,27 +44,26 @@ jobs:
 
         cd iac_using_terraform
         EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1 | tr -d '\r\n')
-        echo "$EC2_IP"
         echo "KAKAKA: $EC2_IP"
         echo "EC2_PUBLIC_IP=$EC2_IP" >> "$GITHUB_ENV"
 
-    # - name: Sử dụng EC2_PUBLIC_IP
-    #   run: |
-    #     echo "Địa chỉ IP của EC2 là $EC2_PUBLIC_IP"
+    - name: Sử dụng EC2_PUBLIC_IP
+      run: |
+        echo "Địa chỉ IP của EC2 là $EC2_PUBLIC_IP"
 
-    # - name: Pull & Run Image chatbot_frontend from DockerHub in EC2
-    #   run: |
-    #     ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
+    - name: Pull & Run Image chatbot_frontend from DockerHub in EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
 
-    #     if ! command -v docker &> /dev/null; then
-    #       sudo apt update && sudo apt upgrade -y
-    #       sudo apt install docker.io -y
-    #       sudo systemctl start docker
-    #       sudo systemctl enable docker
-    #     fi
+        if ! command -v docker &> /dev/null; then
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install docker.io -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+        fi
 
-    #     sudo docker pull quynhsydaole/chatbot_frontend:latest
+        sudo docker pull quynhsydaole/chatbot_frontend:latest
 
-    #     sudo docker rm -f chatbot_frontend || true
+        sudo docker rm -f chatbot_frontend || true
     
-    #     sudo docker run -d --name chatbot_frontend -p 5173:5173 -e VITE_API_URL=http://alb-backend-137276441.us-east-1.elb.amazonaws.com -e VITE_LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e VITE_LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} -e VITE_LANGFUSE_BASEURL=https://cloud.langfuse.com quynhsydaole/chatbot_frontend:latest
+        sudo docker run -d --name chatbot_frontend -p 5173:5173 -e VITE_API_URL=http://alb-backend-137276441.us-east-1.elb.amazonaws.com -e VITE_LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e VITE_LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} -e VITE_LANGFUSE_BASEURL=https://cloud.langfuse.com quynhsydaole/chatbot_frontend:latest
