@@ -1,4 +1,6 @@
 **/.terraform/*
+iac_using_terraform/keypair_ec2/
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/terraform,macos,vscode
 # Edit at https://www.toptal.com/developers/gitignore?templates=terraform,macos,vscode

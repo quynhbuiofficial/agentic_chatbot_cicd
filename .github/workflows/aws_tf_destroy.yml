@@ -34,7 +34,7 @@ jobs:
       run: cd iac_using_terraform && terraform init
     
     - name: Terraform Plan Destroy
-      run: cd iac_using_terraform && terraform plan -destroy -out=tfplan-destroy
+      run: cd iac_using_terraform && terraform plan -destroy -out=tfplan-destroy -var="keypair_public=${{secrets.KEYPAIR_PUBLIC}}"
 
     - name: Terraform Apply Destroy
       run: cd iac_using_terraform && terraform apply -auto-approve tfplan-destroy

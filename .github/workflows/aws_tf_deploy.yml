@@ -73,8 +73,8 @@ jobs:
       run: cd iac_using_terraform && terraform validate
 
     - name: Terraform Plan
-      run: cd iac_using_terraform && terraform plan -out=tfplan
+      run: cd iac_using_terraform && terraform plan -out=tfplan -var="keypair_public=${{secrets.KEYPAIR_PUBLIC}}"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
-      run: cd iac_using_terraform && terraform apply -auto-approve tfplan
+      run: cd iac_using_terraform && terraform apply -auto-approve tfplan 
