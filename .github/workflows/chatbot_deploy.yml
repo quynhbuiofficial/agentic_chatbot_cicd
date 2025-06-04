@@ -49,7 +49,7 @@ jobs:
 
     - name: Sử dụng EC2_PUBLIC_IP
       run: |
-        echo "ENV: $EC2_PUBLIC_IP"
+        echo "ENV: ${{ env.EC2_PUBLIC_IP }}"
 
     - name: Pull & Run Image chatbot_frontend from DockerHub in EC2
       run: |
