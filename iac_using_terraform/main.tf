@@ -219,22 +219,27 @@ resource "aws_security_group" "sevices_sg" {
   }
 }
 
-#Generate a new private key
-resource "tls_private_key" "terraform_keypair" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-# Create AWS Key Pair using the public key generated above
-resource "aws_key_pair" "terraform_keypair" {
-  key_name   = "terraform-keypair2"
-  public_key = tls_private_key.terraform_keypair.public_key_openssh
-}
-#To create a file or folder to save your Private Key
-resource "local_file" "terraform_keypair" {
-  content  = tls_private_key.terraform_keypair.private_key_pem
-  filename = "keypair2.pem"
-}
+# #Generate a new private key (Trong luc tao ec2)
+# resource "tls_private_key" "terraform_keypair" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
+# # Create AWS Key Pair using the public key generated above
+# resource "aws_key_pair" "terraform_keypair" {
+#   key_name   = "terraform-keypair2"
+#   public_key = tls_private_key.terraform_keypair.public_key_openssh
+# }
+# #To create a file or folder to save your Private Key
+# resource "local_file" "terraform_keypair" {
+#   content  = tls_private_key.terraform_keypair.private_key_pem
+#   filename = "keypair2.pem"
+# }
 
+# Su Dung keypair da tao tu truoc
+resource "aws_key_pair" "terraform_keypair" {
+  key_name   = "keypair"
+  public_key = var.keypair_public
+}
 # Create ec2
 resource "aws_instance" "frontend_ec2" {
   depends_on    = [aws_security_group.frontend_sg, aws_subnet.public_subnets]

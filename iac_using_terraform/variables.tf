@@ -1,3 +1,6 @@
+variable "keypair_public" {
+  type = string
+}
 variable "ec2_frontend_name" {
   type    = string
   default = "chatbot-frontend"
