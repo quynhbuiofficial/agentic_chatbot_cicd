@@ -42,13 +42,17 @@ jobs:
         chmod 600 keypair.pem
         head -n 5 keypair.pem
 
-    #     cd iac_using_terraform
-    #     EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)
-    #     printf "EC2_PUBLIC_IP=%s\n" "$EC2_IP" >> $GITHUB_ENV
+        cd iac_using_terraform
+        EC2_IP=$(terraform output -raw aws_frontend_ip | cut -d ':' -f1)
+        echo "EC2_PUBLIC_IP=$EC2_IP" >> $GITHUB_ENV
+
+    - name: Sử dụng EC2_PUBLIC_IP
+      run: |
+        echo "Địa chỉ IP của EC2 là $EC2_PUBLIC_IP"
 
     - name: Pull & Run Image chatbot_frontend from DockerHub in EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@3.87.206.212 << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
 
         if ! command -v docker &> /dev/null; then
           sudo apt update && sudo apt upgrade -y

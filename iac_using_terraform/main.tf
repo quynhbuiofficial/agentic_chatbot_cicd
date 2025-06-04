@@ -250,7 +250,7 @@ resource "aws_instance" "frontend_ec2" {
   subnet_id                   = aws_subnet.public_subnets[0].id
   associate_public_ip_address = true
   key_name                    = aws_key_pair.terraform_keypair.key_name
-  user_data                   = file("user_data.sh")
+  # user_data                   = file("user_data.sh")
 
   root_block_device {
     volume_size           = 8
