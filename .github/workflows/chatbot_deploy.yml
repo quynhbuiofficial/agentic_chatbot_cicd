@@ -72,6 +72,7 @@ jobs:
 
   Chatbot-CI-CD:
     name: Chatbot CI/CD
+    needs: Terraform-Deploy
     runs-on: ubuntu-latest
 
     env:
