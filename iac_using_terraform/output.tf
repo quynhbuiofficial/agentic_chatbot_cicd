@@ -7,10 +7,10 @@ output "aws_frontend_ip" {
 #   value = aws_instance.frontend_ec2.public_dns
 # }
 
-# #Output Frontend DNS loadbalancer
-# output "lb_dns_name" {
-#   value = aws_lb.alb_ne.dns_name
-# }
+#Output Frontend DNS loadbalancer
+output "lb_dns_name" {
+  value = aws_lb.alb_ne.dns_name
+}
 
 # Output backend Private IP
 output "backend_private_ips" {
