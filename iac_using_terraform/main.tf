@@ -322,7 +322,7 @@ resource "aws_lb_target_group" "backend_tg" {
     path                = "/"
     port                = 9999 #9999
     protocol            = "HTTP"
-    interval            = 100        # mỗi 100 giây kiểm tra 1 lần
+    interval            = 120        # mỗi 120 giây kiểm tra 1 lần
     timeout             = 10        # timeout sau 10 giây nếu không phản hồi
     healthy_threshold   = 2         # cần 2 lần liên tiếp thành công để considered healthy
     unhealthy_threshold = 10         # sau 10 lần thất bại thì considered unhealthy
