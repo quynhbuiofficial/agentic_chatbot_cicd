@@ -54,8 +54,8 @@ jobs:
     - name: Set ALB DNS is GITHUB_ENV -> ALB_DNS
       run: |
         cd iac_using_terraform
-        
-        DNS=$(terraform output -raw lb_dns_name | cut -d ':' -f1 | cut -d 'lb_dns_name' -f2)
+        -f2-
+        DNS=$(terraform output -raw lb_dns_name | cut -d ':' -f1 | cut -d ' ' -f 5 | tr -d '\r\n')
         echo "ALB DNS: $DNS"
 
     # - name: Pull & Run Image CHATBOT_FRONTEND from DockerHub in EC2
