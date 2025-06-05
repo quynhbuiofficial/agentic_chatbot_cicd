@@ -25,12 +25,12 @@ output "aws_frontend_ip" {
 output "elasticsearch_private_ip" {
   value = aws_instance.services_ec2[0].private_ip
 }
-# output "neo4j_private_ip" {
-#   value = aws_instance.services_ec2[2].private_ip
-# }
-# output "mcp_private_ip" {
-#   value = aws_instance.services_ec2[1].private_ip
-# }
+output "neo4j_private_ip" {
+  value = aws_instance.services_ec2[1].private_ip
+}
+output "mcp_private_ip" {
+  value = aws_instance.services_ec2[2].private_ip
+}
 
 
 
