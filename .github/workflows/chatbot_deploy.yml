@@ -184,7 +184,7 @@ jobs:
 
         sudo docker rm -f mcp_server || true
     
-        sudo docker run -d --name mcp_server -p 1234:1234 -e ELASTICSEARCH_URL=${{ env.ELASTICSEARCH_IP }} quynhsydaole/mcp_server:v1.0
+        sudo docker run -d --name mcp_server -p 1234:1234 -e ELASTICSEARCH_URL=${{ env.ELASTICSEARCH_IP }} quynhsydaole/mcp_server:latest
 
         INNER_EOF
         EOF
