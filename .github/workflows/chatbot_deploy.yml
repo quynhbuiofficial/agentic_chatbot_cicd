@@ -104,6 +104,8 @@ jobs:
           sudo systemctl enable docker
         fi
 
+        sudo docker rm -f elasticsearch || true
+
         sudo docker run -d -p 9200:9200 -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=false" \
         -e "xpack.license.self_generated.type=trial" -v "elasticsearch-data:/usr/share/elasticsearch/data" docker.elastic.co/elasticsearch/elasticsearch:8.15.0
 
@@ -149,6 +151,8 @@ jobs:
           sudo systemctl start docker
           sudo systemctl enable docker
         fi
+
+        sudo docker rm -f neo4j-apoc || true
 
         sudo docker run -d --name neo4j-apoc -p 7474:7474 -p 7687:7687 -e "NEO4J_AUTH=neo4j/123456789" -e "NEO4J_PLUGINS=[\"apoc\"]" -e "NEO4J_apoc_export_file_enabled=true" \
         -e "NEO4J_apoc_import_file_enabled=true" -e "NEO4J_apoc_import_file_use__neo4j__config=true" -e "NEO4J_dbms_security_procedures_unrestricted=apoc.*" \
