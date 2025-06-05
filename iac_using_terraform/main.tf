@@ -322,10 +322,10 @@ resource "aws_lb_target_group" "backend_tg" {
     path                = "/"
     port                = 9999 #9999
     protocol            = "HTTP"
-    interval            = 30        # mỗi 30 giây kiểm tra 1 lần
+    interval            = 60        # mỗi 30 giây kiểm tra 1 lần
     timeout             = 10        # timeout sau 10 giây nếu không phản hồi
-    healthy_threshold   = 2         # cần 2 lần liên tiếp thành công để considered healthy
-    unhealthy_threshold = 20         # sau 20 lần thất bại thì considered unhealthy
+    healthy_threshold   = 1         # cần 1 lần liên tiếp thành công để considered healthy
+    unhealthy_threshold = 10         # sau 10 lần thất bại thì considered unhealthy
     matcher             = "200"     # mã phản hồi mong muốn (có thể là "200-299")
   }
 }
