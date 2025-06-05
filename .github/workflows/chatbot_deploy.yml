@@ -116,7 +116,7 @@ jobs:
     - name: Set NEO4J IP is GITHUB_ENV -> NEO4J_IP
       run: |
         cd iac_using_terraform
-        EC2_IP=$(terraform output -raw elasticsearch_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        EC2_IP=$(terraform output -raw neo4j_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
         echo "Neo4j IP: $EC2_IP"
         echo "NEO4J_IP=$EC2_IP" >> "$GITHUB_ENV"
       
@@ -146,7 +146,7 @@ jobs:
     - name: Set Mcp_server IP is GITHUB_ENV -> MCP_IP
       run: |
         cd iac_using_terraform
-        EC2_IP=$(terraform output -raw elasticsearch_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        EC2_IP=$(terraform output -raw mcp_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
         echo "MCP IP: $EC2_IP"
         echo "MCP_IP=$EC2_IP" >> "$GITHUB_ENV"
     
@@ -178,7 +178,7 @@ jobs:
     - name: Set chatbot_backend IP is GITHUB_ENV -> BACKEND_IP
       run: |
         cd iac_using_terraform
-        EC2_IP=$(terraform output -raw elasticsearch_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        EC2_IP=$(terraform output -raw backend_private_ips | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
         echo "chatbot_backend IP: $EC2_IP"
         echo "BACKEND_IP=$EC2_IP" >> "$GITHUB_ENV"
     
