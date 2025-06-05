@@ -50,6 +50,7 @@ jobs:
       run: |
         cd iac_using_terraform
         terraform output -raw lb_dns_name
+        
     - name: Set ALB DNS is GITHUB_ENV -> ALB_DNS
       run: |
         cd iac_using_terraform
