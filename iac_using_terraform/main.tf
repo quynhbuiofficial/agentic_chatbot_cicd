@@ -268,26 +268,26 @@ resource "aws_instance" "frontend_ec2" {
     Name = var.ec2_frontend_name
   }
 }
-# resource "aws_instance" "backend_ec2" {
-#   depends_on    = [aws_security_group.backend_sg, aws_subnet.public_subnets]
-#   ami           = "ami-084568db4383264d4"
-#   instance_type = "t2.medium"
+resource "aws_instance" "backend_ec2" {
+  depends_on    = [aws_security_group.backend_sg, aws_subnet.public_subnets]
+  ami           = "ami-084568db4383264d4"
+  instance_type = "t2.medium"
 
-#   vpc_security_group_ids      = [aws_security_group.backend_sg.id]
-#   subnet_id                   = aws_subnet.private_subnet.id
-#   associate_public_ip_address = false
-#   key_name                    = aws_key_pair.terraform_keypair.key_name
+  vpc_security_group_ids      = [aws_security_group.backend_sg.id]
+  subnet_id                   = aws_subnet.private_subnet.id
+  associate_public_ip_address = false
+  key_name                    = aws_key_pair.terraform_keypair.key_name
 
-#   root_block_device {
-#     volume_size           = 13
-#     volume_type           = "gp3"
-#     delete_on_termination = true
-#   }
+  root_block_device {
+    volume_size           = 13
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
 
-#   tags = {
-#     Name = var.ec2_backend_name
-#   }
-# }
+  tags = {
+    Name = var.ec2_backend_name
+  }
+}
 resource "aws_instance" "services_ec2" {
   depends_on    = [aws_security_group.sevices_sg, aws_subnet.private_subnet]
   ami           = "ami-084568db4383264d4"
@@ -310,44 +310,44 @@ resource "aws_instance" "services_ec2" {
   }
 }
 
-# # Creation of load balancer
-# resource "aws_lb_target_group" "backend_tg" {
-#   name        = "ALB-BACKEND-TG"
-#   port        = 9999 #9999
-#   protocol    = "HTTP"
-#   vpc_id      = aws_vpc.vpc_ne.id
-#   target_type = "instance"
-#   health_check {
-#     path     = "/"
-#     port     = 9999 #9999
-#     protocol = "HTTP"
-#   }
-# }
-# # Gắn EC2 vào target group
-# resource "aws_lb_target_group_attachment" "attach_backend1" {
-#   target_group_arn = aws_lb_target_group.backend_tg.arn
-#   target_id        = aws_instance.backend_ec2.id
-#   port             = 9999 # 9999
-#   depends_on = [
-#     aws_lb_target_group.backend_tg,
-#     aws_instance.backend_ec2,
-#   ]
-# }
-# # Tạo ALB
-# resource "aws_lb" "alb_ne" {
-#   name               = "chatbot-alb"
-#   internal           = false
-#   load_balancer_type = "application"
-#   security_groups    = [aws_security_group.alb_sg.id]
-#   subnets            = [for subnet in aws_subnet.public_subnets : subnet.id]
-# }
-# # Listener
-# resource "aws_lb_listener" "listener_alb" {
-#   load_balancer_arn = aws_lb.alb_ne.arn
-#   port              = 80
-#   protocol          = "HTTP"
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_tg.arn
-#   }
-# }
+# Creation of load balancer
+resource "aws_lb_target_group" "backend_tg" {
+  name        = "ALB-BACKEND-TG"
+  port        = 9999 #9999
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.vpc_ne.id
+  target_type = "instance"
+  health_check {
+    path     = "/"
+    port     = 9999 #9999
+    protocol = "HTTP"
+  }
+}
+# Gắn EC2 vào target group
+resource "aws_lb_target_group_attachment" "attach_backend1" {
+  target_group_arn = aws_lb_target_group.backend_tg.arn
+  target_id        = aws_instance.backend_ec2.id
+  port             = 9999 # 9999
+  depends_on = [
+    aws_lb_target_group.backend_tg,
+    aws_instance.backend_ec2,
+  ]
+}
+# Tạo ALB
+resource "aws_lb" "alb_ne" {
+  name               = "chatbot-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = [for subnet in aws_subnet.public_subnets : subnet.id]
+}
+# Listener
+resource "aws_lb_listener" "listener_alb" {
+  load_balancer_arn = aws_lb.alb_ne.arn
+  port              = 80
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_tg.arn
+  }
+}

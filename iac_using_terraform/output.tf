@@ -12,10 +12,10 @@ output "aws_frontend_ip" {
 #   value = aws_lb.alb_ne.dns_name
 # }
 
-# # Output backend Private IP
-# output "backend_private_ips" {
-#   value       = aws_instance.backend_ec2.private_ip
-# }
+# Output backend Private IP
+output "backend_private_ips" {
+  value       = aws_instance.backend_ec2.private_ip
+}
 
 # # Output service Private IP
 # output "services_private_ips" {
