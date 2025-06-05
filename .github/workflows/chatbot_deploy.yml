@@ -121,8 +121,8 @@ jobs:
         source .venv/bin/activate
         pip install uv
         uv pip install -r requirements.txt
-        python3 index_data_tma.py
-        python3 index_data_law.py
+        ELASTICSEARCH_IP=${{ env.ELASTICSEARCH_IP }} python3 index_data_tma.py
+        ELASTICSEARCH_IP=${{ env.ELASTICSEARCH_IP }} python3 index_data_law.py
         
         INNER_EOF
         EOF
