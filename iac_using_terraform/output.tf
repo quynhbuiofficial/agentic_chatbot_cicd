@@ -14,7 +14,6 @@ output "aws_frontend_ip" {
 
 # # Output backend Private IP
 # output "backend_private_ips" {
-#   description = "List of private IPs for backend EC2 instances"
 #   value       = aws_instance.backend_ec2.private_ip
 # }
 
@@ -22,6 +21,15 @@ output "aws_frontend_ip" {
 # output "services_private_ips" {
 #   description = "List of private IPs for services EC2 instances"
 #   value       = [for instance in aws_instance.services_ec2 : instance.private_ip]
+# }
+output "elasticsearch_private_ip" {
+  value = aws_instance.services_ec2[0].private_ip
+}
+# output "neo4j_private_ip" {
+#   value = aws_instance.services_ec2[2].private_ip
+# }
+# output "mcp_private_ip" {
+#   value = aws_instance.services_ec2[1].private_ip
 # }
 
 

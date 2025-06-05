@@ -2,14 +2,14 @@ name: Terraform Deploy
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths: 
-      - 'iac_using_terraform/main.tf'
-      - 'iac_using_terraform/backend.tf'
-      - 'iac_using_terraform/output.tf'
-      - 'iac_using_terraform/variables.tf'
+  # push:
+  #   branches:
+  #     - main
+  #   paths: 
+  #     - 'iac_using_terraform/main.tf'
+  #     - 'iac_using_terraform/backend.tf'
+  #     - 'iac_using_terraform/output.tf'
+  #     - 'iac_using_terraform/variables.tf'
 
 
 jobs:

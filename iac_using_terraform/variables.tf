@@ -13,8 +13,8 @@ variable "ec2_backend_name" {
 
 variable "ec2_services_name" {
   type = list(string)
-  default = ["chatbot-elasticsearch", "chatbot-mcp-server",
-  "chatbot-neo4j"]
+  # default = ["chatbot-elasticsearch","chatbot-neo4j", "chatbot-mcp-server"]
+  default = ["chatbot-elasticsearch"]
 }
 
 variable "ec2_types" {

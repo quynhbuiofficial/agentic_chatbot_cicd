@@ -281,27 +281,27 @@ resource "aws_instance" "frontend_ec2" {
 #     Name = var.ec2_backend_name
 #   }
 # }
-# resource "aws_instance" "services_ec2" {
-#   depends_on    = [aws_security_group.sevices_sg, aws_subnet.private_subnet]
-#   ami           = "ami-084568db4383264d4"
-#   count = length(var.ec2_services_name)
-#   instance_type = var.ec2_types[count.index]
+resource "aws_instance" "services_ec2" {
+  depends_on    = [aws_security_group.sevices_sg, aws_subnet.private_subnet]
+  ami           = "ami-084568db4383264d4"
+  count = length(var.ec2_services_name)
+  instance_type = var.ec2_types[count.index]
 
-#   vpc_security_group_ids      = [aws_security_group.sevices_sg.id]
-#   subnet_id                   = aws_subnet.private_subnet.id
-#   associate_public_ip_address = false
-#   key_name                    = aws_key_pair.terraform_keypair.key_name
+  vpc_security_group_ids      = [aws_security_group.sevices_sg.id]
+  subnet_id                   = aws_subnet.private_subnet.id
+  associate_public_ip_address = false
+  key_name                    = aws_key_pair.terraform_keypair.key_name
 
-#   root_block_device {
-#     volume_size           = var.ec2_storages[count.index]
-#     volume_type           = "gp3"
-#     delete_on_termination = true
-#   }
+  root_block_device {
+    volume_size           = var.ec2_storages[count.index]
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
 
-#   tags = {
-#     Name = var.ec2_services_name[count.index]
-#   }
-# }
+  tags = {
+    Name = var.ec2_services_name[count.index]
+  }
+}
 
 # # Creation of load balancer
 # resource "aws_lb_target_group" "backend_tg" {
