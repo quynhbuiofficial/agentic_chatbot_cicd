@@ -57,169 +57,169 @@ jobs:
         DNS=$(terraform output -raw lb_dns_name | cut -d ':' -f1 | cut -d ' ' -f 5 | tr -d '\r\n')
         echo "ALB DNS: $DNS"
 
-    # - name: Pull & Run Image CHATBOT_FRONTEND from DockerHub in EC2
-    #   run: |
-    #     ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
+    - name: Pull & Run Image CHATBOT_FRONTEND from DockerHub in EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
 
-    #       if ! command -v docker &> /dev/null; then
-    #         sudo apt update && sudo apt upgrade -y
-    #         sudo apt install docker.io -y
-    #         sudo systemctl start docker
-    #         sudo systemctl enable docker
-    #       fi
+          if ! command -v docker &> /dev/null; then
+            sudo apt update && sudo apt upgrade -y
+            sudo apt install docker.io -y
+            sudo systemctl start docker
+            sudo systemctl enable docker
+          fi
 
-    #       sudo docker pull quynhsydaole/chatbot_frontend:latest
+          sudo docker pull quynhsydaole/chatbot_frontend:latest
 
-    #       sudo docker rm -f chatbot_frontend || true
+          sudo docker rm -f chatbot_frontend || true
       
-    #       sudo docker run -d --name chatbot_frontend -p 5173:5173 -e VITE_API_URL=${{ env.ALB_DNS }} \
-    #       -e VITE_LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e VITE_LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} \
-    #       -e VITE_LANGFUSE_BASEURL=https://cloud.langfuse.com quynhsydaole/chatbot_frontend:latest
-    #     EOF
+          sudo docker run -d --name chatbot_frontend -p 5173:5173 -e VITE_API_URL=${{ env.ALB_DNS }} \
+          -e VITE_LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e VITE_LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} \
+          -e VITE_LANGFUSE_BASEURL=https://cloud.langfuse.com quynhsydaole/chatbot_frontend:latest
+        EOF
         
-    # - name: Set Elasticsearch IP is GITHUB_ENV -> ELASTICSEARCH_IP
-    #   run: |
-    #     cd iac_using_terraform
-    #     EC2_IP=$(terraform output -raw elasticsearch_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-    #     echo "ELASTICSEARCH IP: $EC2_IP"
-    #     echo "ELASTICSEARCH_IP=$EC2_IP" >> "$GITHUB_ENV"
+    - name: Set Elasticsearch IP is GITHUB_ENV -> ELASTICSEARCH_IP
+      run: |
+        cd iac_using_terraform
+        EC2_IP=$(terraform output -raw elasticsearch_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        echo "ELASTICSEARCH IP: $EC2_IP"
+        echo "ELASTICSEARCH_IP=$EC2_IP" >> "$GITHUB_ENV"
 
-    # - name: Pull & Run Image ELASTICSEARCH in EC2
-    #   run: |
-    #     echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
-    #     echo "ELASTICSEARCH_IP: ${{ env.ELASTICSEARCH_IP }}"
+    - name: Pull & Run Image ELASTICSEARCH in EC2
+      run: |
+        echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
+        echo "ELASTICSEARCH_IP: ${{ env.ELASTICSEARCH_IP }}"
 
-    #     scp -o StrictHostKeyChecking=no -i keypair.pem keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }}:/home/ubuntu/    
+        scp -o StrictHostKeyChecking=no -i keypair.pem keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }}:/home/ubuntu/    
         
-    #     ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
-    #     chmod 600 ~/keypair.pem
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
+        chmod 600 ~/keypair.pem
 
-    #     ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.ELASTICSEARCH_IP }} << 'INNER_EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.ELASTICSEARCH_IP }} << 'INNER_EOF'
       
-    #     if ! command -v docker &> /dev/null; then
-    #       sudo apt update && sudo apt upgrade -y
-    #       sudo apt install docker.io -y
-    #       sudo systemctl start docker
-    #       sudo systemctl enable docker
-    #     fi
+        if ! command -v docker &> /dev/null; then
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install docker.io -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+        fi
 
-    #     sudo docker run -d -p 9200:9200 -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=false" \
-    #     -e "xpack.license.self_generated.type=trial" -v "elasticsearch-data:/usr/share/elasticsearch/data" docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+        sudo docker run -d -p 9200:9200 -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=false" \
+        -e "xpack.license.self_generated.type=trial" -v "elasticsearch-data:/usr/share/elasticsearch/data" docker.elastic.co/elasticsearch/elasticsearch:8.15.0
 
-    #     sudo apt install -y python3-pip python3.12-venv git
-    #     if [ -d "chatbot_elasticsearch_data/.git" ]; then
-    #       echo "📁 Repo already exists. Pulling latest changes..."
-    #       cd chatbot_elasticsearch_data
-    #       git pull
-    #     else
-    #       echo "📁 Repo not found. Cloning..."
-    #       git clone https://github.com/quynhbuiofficial/chatbot_elasticsearch_data.git
-    #       cd chatbot_elasticsearch_data
-    #     fi
-    #     python3 -m venv .venv
-    #     source .venv/bin/activate
-    #     pip install uv
-    #     uv pip install -r requirements.txt
-    #     python3 index_data_tma.py
-    #     python3 index_data_law.py
+        sudo apt install -y python3-pip python3.12-venv git
+        if [ -d "chatbot_elasticsearch_data/.git" ]; then
+          echo "📁 Repo already exists. Pulling latest changes..."
+          cd chatbot_elasticsearch_data
+          git pull
+        else
+          echo "📁 Repo not found. Cloning..."
+          git clone https://github.com/quynhbuiofficial/chatbot_elasticsearch_data.git
+          cd chatbot_elasticsearch_data
+        fi
+        python3 -m venv .venv
+        source .venv/bin/activate
+        pip install uv
+        uv pip install -r requirements.txt
+        python3 index_data_tma.py
+        python3 index_data_law.py
         
-    #     INNER_EOF
-    #     EOF
+        INNER_EOF
+        EOF
       
-    # - name: Set NEO4J IP is GITHUB_ENV -> NEO4J_IP
-    #   run: |
-    #     cd iac_using_terraform
-    #     EC2_IP=$(terraform output -raw neo4j_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-    #     echo "Neo4j IP: $EC2_IP"
-    #     echo "NEO4J_IP=$EC2_IP" >> "$GITHUB_ENV"
+    - name: Set NEO4J IP is GITHUB_ENV -> NEO4J_IP
+      run: |
+        cd iac_using_terraform
+        EC2_IP=$(terraform output -raw neo4j_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        echo "Neo4j IP: $EC2_IP"
+        echo "NEO4J_IP=$EC2_IP" >> "$GITHUB_ENV"
       
-    # - name: Pull & Run Image Neo4j in EC2
-    #   run: |
-    #     echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
-    #     echo "NEO4J_IP: ${{ env.NEO4J_IP }}"
+    - name: Pull & Run Image Neo4j in EC2
+      run: |
+        echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
+        echo "NEO4J_IP: ${{ env.NEO4J_IP }}"
 
-    #     ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
 
-    #     ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.NEO4J_IP }} << 'INNER_EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.NEO4J_IP }} << 'INNER_EOF'
       
-    #     if ! command -v docker &> /dev/null; then
-    #       sudo apt update && sudo apt upgrade -y
-    #       sudo apt install docker.io -y
-    #       sudo systemctl start docker
-    #       sudo systemctl enable docker
-    #     fi
+        if ! command -v docker &> /dev/null; then
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install docker.io -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+        fi
 
-    #     sudo docker run -d --name neo4j-apoc -p 7474:7474 -p 7687:7687 -e "NEO4J_AUTH=neo4j/123456789" -e "NEO4J_PLUGINS=[\"apoc\"]" -e "NEO4J_apoc_export_file_enabled=true" \
-    #     -e "NEO4J_apoc_import_file_enabled=true" -e "NEO4J_apoc_import_file_use__neo4j__config=true" -e "NEO4J_dbms_security_procedures_unrestricted=apoc.*" \
-    #     -e "NEO4J_dbms_security_procedures_allowlist=apoc.*" -v neo4j_data:/data -v neo4j_logs:/logs neo4j:2025.04
+        sudo docker run -d --name neo4j-apoc -p 7474:7474 -p 7687:7687 -e "NEO4J_AUTH=neo4j/123456789" -e "NEO4J_PLUGINS=[\"apoc\"]" -e "NEO4J_apoc_export_file_enabled=true" \
+        -e "NEO4J_apoc_import_file_enabled=true" -e "NEO4J_apoc_import_file_use__neo4j__config=true" -e "NEO4J_dbms_security_procedures_unrestricted=apoc.*" \
+        -e "NEO4J_dbms_security_procedures_allowlist=apoc.*" -v neo4j_data:/data -v neo4j_logs:/logs neo4j:2025.04
 
-    #     INNER_EOF
-    #     EOF
+        INNER_EOF
+        EOF
       
-    # - name: Set Mcp_server IP is GITHUB_ENV -> MCP_IP
-    #   run: |
-    #     cd iac_using_terraform
-    #     EC2_IP=$(terraform output -raw mcp_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-    #     echo "MCP IP: $EC2_IP"
-    #     echo "MCP_IP=$EC2_IP" >> "$GITHUB_ENV"
+    - name: Set Mcp_server IP is GITHUB_ENV -> MCP_IP
+      run: |
+        cd iac_using_terraform
+        EC2_IP=$(terraform output -raw mcp_private_ip | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        echo "MCP IP: $EC2_IP"
+        echo "MCP_IP=$EC2_IP" >> "$GITHUB_ENV"
     
-    # - name: Pull & Run Image MCP_SERVER from DockerHub in EC2
-    #   run: |
-    #     echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
-    #     echo "MCP_IP: ${{ env.MCP_IP }}"
+    - name: Pull & Run Image MCP_SERVER from DockerHub in EC2
+      run: |
+        echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
+        echo "MCP_IP: ${{ env.MCP_IP }}"
 
-    #     ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
 
-    #     ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.MCP_IP }} << 'INNER_EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.MCP_IP }} << 'INNER_EOF'
       
-    #     if ! command -v docker &> /dev/null; then
-    #       sudo apt update && sudo apt upgrade -y
-    #       sudo apt install docker.io -y
-    #       sudo systemctl start docker
-    #       sudo systemctl enable docker
-    #     fi
+        if ! command -v docker &> /dev/null; then
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install docker.io -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+        fi
 
-    #     sudo docker pull quynhsydaole/mcp_server:latest
+        sudo docker pull quynhsydaole/mcp_server:latest
 
-    #     sudo docker rm -f mcp_server || true
+        sudo docker rm -f mcp_server || true
     
-    #     sudo docker run -d --name mcp_server -p 1234:1234 -e ELASTICSEARCH_URL=${{ env.ELASTICSEARCH_IP }} quynhsydaole/mcp_server:v1.0
+        sudo docker run -d --name mcp_server -p 1234:1234 -e ELASTICSEARCH_URL=${{ env.ELASTICSEARCH_IP }} quynhsydaole/mcp_server:v1.0
 
-    #     INNER_EOF
-    #     EOF
+        INNER_EOF
+        EOF
     
-    # - name: Set chatbot_backend IP is GITHUB_ENV -> BACKEND_IP
-    #   run: |
-    #     cd iac_using_terraform
-    #     EC2_IP=$(terraform output -raw backend_private_ips | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-    #     echo "chatbot_backend IP: $EC2_IP"
-    #     echo "BACKEND_IP=$EC2_IP" >> "$GITHUB_ENV"
+    - name: Set chatbot_backend IP is GITHUB_ENV -> BACKEND_IP
+      run: |
+        cd iac_using_terraform
+        EC2_IP=$(terraform output -raw backend_private_ips | cut -d ':' -f1 | tr -d '\r\n' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+        echo "chatbot_backend IP: $EC2_IP"
+        echo "BACKEND_IP=$EC2_IP" >> "$GITHUB_ENV"
     
-    # - name: Pull & Run Image CHATBOT_BACKEND from DockerHub in EC2
-    #   run: |
-    #     echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
-    #     echo "BACKEND_IP: ${{ env.BACKEND_IP }}"
+    - name: Pull & Run Image CHATBOT_BACKEND from DockerHub in EC2
+      run: |
+        echo "EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}"
+        echo "BACKEND_IP: ${{ env.BACKEND_IP }}"
 
-    #     ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
 
-    #     ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.BACKEND_IP }} << 'INNER_EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.BACKEND_IP }} << 'INNER_EOF'
       
-    #     if ! command -v docker &> /dev/null; then
-    #       sudo apt update && sudo apt upgrade -y
-    #       sudo apt install docker.io -y
-    #       sudo systemctl start docker
-    #       sudo systemctl enable docker
-    #     fi
+        if ! command -v docker &> /dev/null; then
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install docker.io -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+        fi
 
-    #     sudo docker pull quynhsydaole/chatbot_backend:latest
+        sudo docker pull quynhsydaole/chatbot_backend:latest
 
-    #     sudo docker rm -f mcp_server || true
+        sudo docker rm -f mcp_server || true
     
-    #     sudo docker run -d --name chatbot_backend -p 9999:9999 -e ELASTICSEARCH_URL=${{ env.ELASTICSEARCH_IP }} -e NEO4J_URL=${{ env.NEO4J_IP }} -e MCP_SERVER_URL=http://${{ env.MCP_IP }}/sse \
-    #     -e MODEL_CHAT_INPUT_COST=0.0001 -e MODEL_CHAT_OUTPUT_COST=0.0001 -e NEO4J_USERNAME=neo4j -e NEO4J_PASSWORD=123456789 \
-    #     -e LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} -e LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e LANGFUSE_BASEURL=https://cloud.langfuse.com \
-    #     -e GITHUB_TOKEN=${{secrets.LEQUYNHLE_GITHUB_TOKEN}} -e MODEL_NAME=gpt-4o -e LANGFUSE_BASEURL=https://cloud.langfuse.com -e LANGFUSE_BASEURL=https://cloud.langfuse.com quynhsydaole/chatbot_backend:latest
+        sudo docker run -d --name chatbot_backend -p 9999:9999 -e ELASTICSEARCH_URL=${{ env.ELASTICSEARCH_IP }} -e NEO4J_URL=${{ env.NEO4J_IP }} -e MCP_SERVER_URL=http://${{ env.MCP_IP }}/sse \
+        -e MODEL_CHAT_INPUT_COST=0.0001 -e MODEL_CHAT_OUTPUT_COST=0.0001 -e NEO4J_USERNAME=neo4j -e NEO4J_PASSWORD=123456789 \
+        -e LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} -e LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e LANGFUSE_BASEURL=https://cloud.langfuse.com \
+        -e GITHUB_TOKEN=${{secrets.LEQUYNHLE_GITHUB_TOKEN}} -e MODEL_NAME=gpt-4o -e LANGFUSE_BASEURL=https://cloud.langfuse.com -e LANGFUSE_BASEURL=https://cloud.langfuse.com quynhsydaole/chatbot_backend:latest
 
-    #     INNER_EOF
-    #     EOF
+        INNER_EOF
+        EOF
     
