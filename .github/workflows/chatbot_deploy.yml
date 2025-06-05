@@ -106,7 +106,6 @@ jobs:
         source .venv/bin/activate
         pip install uv
         uv pip install -r requirements.txt
-
         python3 index_data_tma.py
         python3 index_data_law.py
         
@@ -136,7 +135,9 @@ jobs:
           sudo systemctl enable docker
         fi
 
-        sudo docker run -d --name neo4j-apoc -p 7474:7474 -p 7687:7687 -e "NEO4J_AUTH=neo4j/123456789" -e "NEO4J_PLUGINS=[\"apoc\"]" -e "NEO4J_apoc_export_file_enabled=true" -e "NEO4J_apoc_import_file_enabled=true" -e "NEO4J_apoc_import_file_use__neo4j__config=true" -e "NEO4J_dbms_security_procedures_unrestricted=apoc.*" -e "NEO4J_dbms_security_procedures_allowlist=apoc.*" -v neo4j_data:/data -v neo4j_logs:/logs neo4j:2025.04
+        sudo docker run -d --name neo4j-apoc -p 7474:7474 -p 7687:7687 -e "NEO4J_AUTH=neo4j/123456789" -e "NEO4J_PLUGINS=[\"apoc\"]" -e "NEO4J_apoc_export_file_enabled=true" 
+        -e "NEO4J_apoc_import_file_enabled=true" -e "NEO4J_apoc_import_file_use__neo4j__config=true" -e "NEO4J_dbms_security_procedures_unrestricted=apoc.*" 
+        -e "NEO4J_dbms_security_procedures_allowlist=apoc.*" -v neo4j_data:/data -v neo4j_logs:/logs neo4j:2025.04
 
         INNER_EOF
         EOF
