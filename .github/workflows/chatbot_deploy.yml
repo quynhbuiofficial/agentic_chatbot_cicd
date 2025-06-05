@@ -83,18 +83,18 @@ jobs:
         scp -o StrictHostKeyChecking=no -i keypair.pem keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }}:/home/ubuntu/    
         
         ssh -o StrictHostKeyChecking=no -i keypair.pem ubuntu@${{ env.EC2_PUBLIC_IP }} << 'EOF'
-        chmod 600 ~/keypair.pem
+          chmod 600 ~/keypair.pem
 
-        ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.ELASTICSEARCH_IP }} << 'INNER_EOF'
-        
-        if ! command -v docker &> /dev/null; then
-          sudo apt update && sudo apt upgrade -y
-          sudo apt install docker.io -y
-          sudo systemctl start docker
-          sudo systemctl enable docker
-        fi
+          ssh -o StrictHostKeyChecking=no -i ~/keypair.pem ubuntu@${{ env.ELASTICSEARCH_IP }} << 'INNER_EOF'
+          
+            if ! command -v docker &> /dev/null; then
+              sudo apt update && sudo apt upgrade -y
+              sudo apt install docker.io -y
+              sudo systemctl start docker
+              sudo systemctl enable docker
+            fi
 
-        docker run -d -p 9200:9200 -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "xpack.license.self_generated.type=trial" -v "elasticsearch-data:/usr/share/elasticsearch/data" docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+            docker run -d -p 9200:9200 -d --name elasticsearch -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "xpack.license.self_generated.type=trial" -v "elasticsearch-data:/usr/share/elasticsearch/data" docker.elastic.co/elasticsearch/elasticsearch:8.15.0
 
-        INNER_EOF
+          INNER_EOF
         EOF

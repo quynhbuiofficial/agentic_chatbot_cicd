@@ -187,6 +187,13 @@ resource "aws_security_group" "sevices_sg" {
   name   = "elasticseach, neo4j, mcp_sv"
 
   ingress {
+    description     = "SSH"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.frontend_sg.id]
+  }
+  ingress {
     description     = "elasticseach"
     from_port       = 9200
     to_port         = 9200
