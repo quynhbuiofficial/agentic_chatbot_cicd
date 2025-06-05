@@ -54,7 +54,7 @@ jobs:
     - name: Set ALB DNS is GITHUB_ENV -> ALB_DNS
       run: |
         cd iac_using_terraform
-        DNS=$(terraform output -raw lb_dns_name | cut -d ':' -f1 | tr -d '\r\n' | grep -oP '(?<=lb_dns_name\s+)\S+')
+        DNS=$(terraform output -raw lb_dns_name | cut -d ':' -f1 | tr -d '\r\n')
         echo "ALB DNS: $DNS"
         echo "ALB_DNS=$DNS" >> "$GITHUB_ENV"
 
