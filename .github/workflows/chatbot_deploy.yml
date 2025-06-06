@@ -4,75 +4,75 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Terraform-Deploy:
-  #   name: 'Terraform Deploy'
-  #   runs-on: ubuntu-latest
+  Terraform-Deploy:
+    name: 'Terraform Deploy'
+    runs-on: ubuntu-latest
 
-  #   env:
-  #     AWS_REGION: 'us-east-1'
-  #     TF_VERSION: '1.12.1'
+    env:
+      AWS_REGION: 'us-east-1'
+      TF_VERSION: '1.12.1'
     
-  #   steps:
-  #   - name: 'checkout github repository'
-  #     uses: actions/checkout@v4
+    steps:
+    - name: 'checkout github repository'
+      uses: actions/checkout@v4
 
-  #   - name: 'Configure AWS credentials'
-  #     uses: aws-actions/configure-aws-credentials@v1
-  #     with: 
-  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       aws-region: ${{ env.AWS_REGION }}
+    - name: 'Configure AWS credentials'
+      uses: aws-actions/configure-aws-credentials@v1
+      with: 
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
       
-  #   - name: Setup Terraform
-  #     uses: hashicorp/setup-terraform@v1
-  #     with:
-  #       terraform_version: ${{ env.TF_VERSION }}
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
     
-  #   - name: Create simple S3 backend bucket (if not exists)
-  #     run: |
-  #       BUCKET_NAME="qbui-chatbot-tf-state"
-  #       REGION="us-east-1"
+    - name: Create simple S3 backend bucket (if not exists)
+      run: |
+        BUCKET_NAME="qbui-chatbot-tf-state"
+        REGION="us-east-1"
 
-  #       echo "🔍 Checking if bucket '$BUCKET_NAME' exists..."
-  #       if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
-  #         echo "✅ Bucket already exists: $BUCKET_NAME"
-  #       else
-  #         echo "🪣 Creating bucket: $BUCKET_NAME"
-  #         aws s3api create-bucket \
-  #           --bucket "$BUCKET_NAME" \
-  #           --region "$REGION" 
+        echo "🔍 Checking if bucket '$BUCKET_NAME' exists..."
+        if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+          echo "✅ Bucket already exists: $BUCKET_NAME"
+        else
+          echo "🪣 Creating bucket: $BUCKET_NAME"
+          aws s3api create-bucket \
+            --bucket "$BUCKET_NAME" \
+            --region "$REGION" 
 
-  #         echo "Setup Permissions Blocking public access for security"
-  #         aws s3api put-public-access-block --bucket "$BUCKET_NAME" --public-access-block-configuration '{
-  #           "BlockPublicAcls": true,
-  #           "IgnorePublicAcls": true,
-  #           "BlockPublicPolicy": true,
-  #           "RestrictPublicBuckets": true
-  #         }'
+          echo "Setup Permissions Blocking public access for security"
+          aws s3api put-public-access-block --bucket "$BUCKET_NAME" --public-access-block-configuration '{
+            "BlockPublicAcls": true,
+            "IgnorePublicAcls": true,
+            "BlockPublicPolicy": true,
+            "RestrictPublicBuckets": true
+          }'
 
-  #         echo "📜 Enabling versioning"
-  #         aws s3api put-bucket-versioning --bucket "$BUCKET_NAME" --versioning-configuration Status=Enabled
-  #       fi
+          echo "📜 Enabling versioning"
+          aws s3api put-bucket-versioning --bucket "$BUCKET_NAME" --versioning-configuration Status=Enabled
+        fi
   
-  #   - name: Terraform Init
-  #     run: cd iac_using_terraform && terraform init
+    - name: Terraform Init
+      run: cd iac_using_terraform && terraform init
     
-  #   - name: Terraform Format
-  #     run: cd iac_using_terraform && terraform fmt 
+    - name: Terraform Format
+      run: cd iac_using_terraform && terraform fmt 
     
-  #   - name: Terraform Validate
-  #     run: cd iac_using_terraform && terraform validate
+    - name: Terraform Validate
+      run: cd iac_using_terraform && terraform validate
 
-  #   - name: Terraform Plan
-  #     run: cd iac_using_terraform && terraform plan -out=tfplan -var="keypair_public=${{secrets.KEYPAIR_PUBLIC}}"
+    - name: Terraform Plan
+      run: cd iac_using_terraform && terraform plan -out=tfplan -var="keypair_public=${{secrets.KEYPAIR_PUBLIC}}"
 
-  #   - name: Terraform Apply
-  #     if: github.ref == 'refs/heads/main'
-  #     run: cd iac_using_terraform && terraform apply -auto-approve tfplan 
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: cd iac_using_terraform && terraform apply -auto-approve tfplan 
 
   Chatbot-CI-CD:
     name: Chatbot CI/CD
-    # needs: Terraform-Deploy
+    needs: Terraform-Deploy
     runs-on: ubuntu-latest
 
     env:
