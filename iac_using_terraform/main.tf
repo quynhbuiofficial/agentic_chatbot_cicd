@@ -198,8 +198,16 @@ resource "aws_security_group" "sevices_sg" {
     from_port       = 9200
     to_port         = 9200
     protocol        = "tcp"
+    security_groups = [aws_security_group.backend_sg.id]
+  }
+  ingress {
+    description     = "2 elasticseach"
+    from_port       = 9200
+    to_port         = 9200
+    protocol        = "tcp"
     security_groups = ["0.0.0.0/0"]
   }
+
   ingress {
     description     = "neo4j"
     from_port       = 7687
