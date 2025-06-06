@@ -381,7 +381,25 @@ resource "aws_instance" "neo4j_ec2" {
   }
 }
 
+resource "aws_instance" "mcp_ec2" {
+  ami           = "ami-084568db4383264d4"
+  instance_type = "t2.small"
 
+  vpc_security_group_ids      = [aws_security_group.mcp_server_sg.id]
+  subnet_id                   = aws_subnet.private_subnet.id
+  associate_public_ip_address = false
+  key_name                    = aws_key_pair.terraform_keypair.key_name
+
+  root_block_device {
+    volume_size           = 13
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
+
+  tags = {
+    Name = "mcp_ec2"
+  }
+}
 
 # Creation of load balancer
 resource "aws_lb_target_group" "backend_tg" {
