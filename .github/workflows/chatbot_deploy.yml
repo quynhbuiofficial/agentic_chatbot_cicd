@@ -173,11 +173,11 @@ jobs:
 
         sudo apt install -y python3-pip python3.12-venv git
         if [ -d "chatbot_elasticsearch_data/.git" ]; then
-          echo "📁 Repo already exists. Pulling latest changes..."
+          echo "📁 Repo chatbot_elasticsearch_data already exists. Pulling latest changes..."
           cd chatbot_elasticsearch_data
           git pull
         else
-          echo "📁 Repo not found. Cloning..."
+          echo "📁 Repo chatbot_elasticsearch_data not found. Cloning..."
           git clone https://github.com/quynhbuiofficial/chatbot_elasticsearch_data.git
           cd chatbot_elasticsearch_data
         fi
@@ -220,6 +220,22 @@ jobs:
         -e "NEO4J_apoc_import_file_enabled=true" -e "NEO4J_apoc_import_file_use__neo4j__config=true" -e "NEO4J_dbms_security_procedures_unrestricted=apoc.*" \
         -e "NEO4J_dbms_security_procedures_allowlist=apoc.*" -v neo4j_data:/data -v neo4j_logs:/logs neo4j:2025.04
 
+        sudo apt install -y python3-pip python3.12-venv git
+        if [ -d "chatbot_neo4j_data/.git" ]; then
+          echo "📁 Repo chatbot_neo4j_data already exists. Pulling latest changes..."
+          cd chatbot_neo4j_data
+          git pull
+        else
+          echo "📁 Repo chatbot_neo4j_data not found. Cloning..."
+          git clone https://github.com/quynhbuiofficial/chatbot_neo4j_data.git
+          cd chatbot_neo4j_data
+        fi
+        python3 -m venv .venv
+        source .venv/bin/activate
+        pip install uv
+        uv pip install -r requirements.txt
+        python3 index_neo4j_data.py
+        
         INNER_EOF
         EOF
       
