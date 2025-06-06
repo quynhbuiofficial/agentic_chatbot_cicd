@@ -182,38 +182,16 @@ resource "aws_security_group" "backend_sg" {
     Name = "qbui-backend-sg"
   }
 }
-resource "aws_security_group" "sevices_sg" {
+resource "aws_security_group" "mcp_server_sg" {
   vpc_id = aws_vpc.vpc_ne.id
-  name   = "elasticseach, neo4j, mcp_sv"
-
+  name   = "mcp_sv for backend"
+  
   ingress {
     description     = "SSH"
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
     security_groups = [aws_security_group.frontend_sg.id]
-  }
-  ingress {
-    description     = "elasticseach"
-    from_port       = 9200
-    to_port         = 9200
-    protocol        = "tcp"
-    security_groups = [aws_security_group.backend_sg.id]
-  }
-  ingress {
-    description     = "2 elasticseach"
-    from_port       = 9200
-    to_port         = 9200
-    protocol        = "tcp"
-    security_groups = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description     = "neo4j"
-    from_port       = 7687
-    to_port         = 7687
-    protocol        = "tcp"
-    security_groups = [aws_security_group.backend_sg.id]
   }
   ingress {
     description     = "mcp"
@@ -229,9 +207,75 @@ resource "aws_security_group" "sevices_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "qbui-services-sg"
+    Name = "qbui-mcp_server-sg"
   }
 }
+
+resource "aws_security_group" "elasticsearch_sg" {
+  vpc_id = aws_vpc.vpc_ne.id
+  name = "Elasticsearch for backend + mcp"
+
+  ingress {
+    description     = "SSH"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.frontend_sg.id]
+  }
+  ingress {
+    description     = "BACKEND"
+    from_port       = 9200
+    to_port         = 9200
+    protocol        = "tcp"
+    security_groups = [aws_security_group.backend_sg.id]
+  }
+  ingress {
+    description     = "MCP"
+    from_port       = 9200
+    to_port         = 9200
+    protocol        = "tcp"
+    security_groups = [aws_security_group.mcp_server_sg.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "qbui-elasticsearch-sg"
+  }
+}
+
+resource "aws_security_group" "neo4j_sg" {
+  vpc_id = aws_vpc.vpc_ne.id
+  name = "Neo4j for backend"
+
+  ingress {
+    description     = "SSH"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.frontend_sg.id]
+  }
+  ingress {
+    description     = "neo4j"
+    from_port       = 7687
+    to_port         = 7687
+    protocol        = "tcp"
+    security_groups = [aws_security_group.backend_sg.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "qbui-neo4j-sg"
+  }
+}
+
 
 # #Generate a new private key (Trong luc tao ec2)
 # resource "tls_private_key" "terraform_keypair" {
@@ -296,25 +340,64 @@ resource "aws_instance" "backend_ec2" {
     Name = var.ec2_backend_name
   }
 }
-resource "aws_instance" "services_ec2" {
-  depends_on    = [aws_security_group.sevices_sg, aws_subnet.private_subnet]
-  ami           = "ami-084568db4383264d4"
-  count = length(var.ec2_services_name)
-  instance_type = var.ec2_types[count.index]
 
-  vpc_security_group_ids      = [aws_security_group.sevices_sg.id]
+resource "aws_instance" "elasticsearch_ec2" {
+  ami           = "ami-084568db4383264d4"
+  instance_type = "t2.medium"
+
+  vpc_security_group_ids      = [aws_security_group.elasticsearch_sg.id]
   subnet_id                   = aws_subnet.private_subnet.id
   associate_public_ip_address = false
   key_name                    = aws_key_pair.terraform_keypair.key_name
 
   root_block_device {
-    volume_size           = var.ec2_storages[count.index]
+    volume_size           = 13
     volume_type           = "gp3"
     delete_on_termination = true
   }
 
   tags = {
-    Name = var.ec2_services_name[count.index]
+    Name = "Elasticsearch_ec2"
+  }
+}
+
+resource "aws_instance" "neo4j_ec2" {
+  ami           = "ami-084568db4383264d4"
+  instance_type = "t2.micro"
+
+  vpc_security_group_ids      = [aws_security_group.neo4j_sg.id]
+  subnet_id                   = aws_subnet.private_subnet.id
+  associate_public_ip_address = false
+  key_name                    = aws_key_pair.terraform_keypair.key_name
+
+  root_block_device {
+    volume_size           = 8
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
+
+  tags = {
+    Name = "neo4j_ec2"
+  }
+}
+
+resource "aws_instance" "mcp_ec2" {
+  ami           = "ami-084568db4383264d4"
+  instance_type = "t2.small"
+
+  vpc_security_group_ids      = [aws_security_group.mcp_server_sg.id]
+  subnet_id                   = aws_subnet.private_subnet.id
+  associate_public_ip_address = false
+  key_name                    = aws_key_pair.terraform_keypair.key_name
+
+  root_block_device {
+    volume_size           = 8
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
+
+  tags = {
+    Name = "mcp_ec2"
   }
 }
 
