@@ -198,7 +198,7 @@ resource "aws_security_group" "sevices_sg" {
     from_port       = 9200
     to_port         = 9200
     protocol        = "tcp"
-    security_groups = [aws_security_group.backend_sg.id]
+    security_groups = [aws_security_group.backend_sg.id, aws_security_group.sevices_sg.id]
   }
   ingress {
     description     = "neo4j"

@@ -135,7 +135,7 @@ jobs:
 
           sudo docker rm -f chatbot_frontend || true
 
-          echo "ALB_DNS=${{ env.ALB_DNS }}" 
+          echo "ALB_DNS=${{ env.ALB_DNS }} KOKOKO" 
 
           sudo docker run -d --name chatbot_frontend -p 5173:5173 -e VITE_API_URL=${{ env.ALB_DNS }} \
           -e VITE_LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e VITE_LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} \
