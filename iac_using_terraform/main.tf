@@ -391,7 +391,7 @@ resource "aws_instance" "mcp_ec2" {
   key_name                    = aws_key_pair.terraform_keypair.key_name
 
   root_block_device {
-    volume_size           = 8
+    volume_size           = 13
     volume_type           = "gp3"
     delete_on_termination = true
   }
