@@ -23,13 +23,13 @@ output "backend_private_ips" {
 #   value       = [for instance in aws_instance.services_ec2 : instance.private_ip]
 # }
 output "elasticsearch_private_ip" {
-  value = aws_instance.services_ec2[0].private_ip
+  value = aws_instance.elasticsearch_ec2.private_ip
 }
 output "neo4j_private_ip" {
-  value = aws_instance.services_ec2[1].private_ip
+  value = aws_instance.neo4j_ec2.private_ip
 }
 output "mcp_private_ip" {
-  value = aws_instance.services_ec2[2].private_ip
+  value = aws_instance.mcp_ec2.private_ip
 }
 
 
