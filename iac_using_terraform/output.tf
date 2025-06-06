@@ -28,9 +28,9 @@ output "elasticsearch_private_ip" {
 output "neo4j_private_ip" {
   value = aws_instance.neo4j_ec2.private_ip
 }
-output "mcp_private_ip" {
-  value = aws_instance.mcp_ec2.private_ip
-}
+# output "mcp_private_ip" {
+#   value = aws_instance.mcp_ec2.private_ip
+# }
 
 
 
