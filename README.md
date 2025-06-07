@@ -77,18 +77,18 @@ Set up S3, ALB
 
 ### 3. Configure GitHub Secrets
 Settings → Secrets and variables → Actions → New repository secret
-Add:
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-DOCKER_HUB_TOKEN
+- Add:
+  - AWS_ACCESS_KEY_ID
+  - AWS_SECRET_ACCESS_KEY
+  - DOCKER_HUB_TOKEN
 ...
 
 ### 4. CI/CD Workflow via GitHub Actions
 The provided GitHub Actions workflow will:
-1. Build Docker images
-2. Push to Docker Hub
-3. SSH into EC2 instance
-4. Pull and deploy the containers using docker like docker compose
+- 1. Build Docker images
+- 2. Push to Docker Hub
+- 3. SSH into EC2 instance
+- 4. Pull and deploy the containers using docker like docker compose
 
 # 🧠 Author
 ## Developed and maintained by @quynhbuiofficial
