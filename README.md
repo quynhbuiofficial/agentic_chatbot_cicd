@@ -2,14 +2,16 @@
 
 This project automates the CI/CD pipeline to deploy a full-stack **Agentic Chatbot System** to AWS EC2 using **Docker**, **Terraform**, and **GitHub Actions**. The system includes frontend, backend, Elasticsearch, Neo4j, and an MCP server, designed to run efficiently within a secure VPC and subnet configuration.
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d028957b-a4b0-4559-bee8-8c2859989013" width="80%">
+  <img src="https://github.com/user-attachments/assets/af79b5f2-0733-4919-aa0e-a2293f0fd8f7" width="80%">
+</div>
+
 ---
 
 ## 📌 Architecture Diagrams
 
 ### 🔷 Terraform Infrastructure Layout
-
-![Terraform Infrastructure](./path/to/eddf8a11-6829-477b-b244-753a34bf57f7.png)
-
 - **VPC**: `10.0.0.0/16`
 - **Public Subnet**: `10.0.0.0/22`
 - **Private Subnet-01**: `10.0.4.0/22`
@@ -20,9 +22,6 @@ This project automates the CI/CD pipeline to deploy a full-stack **Agentic Chatb
 ---
 
 ### 🔶 Chatbot Deployment Layout
-
-![Chatbot Deployment](./path/to/ef1bb8f8-0222-41a2-b148-088ffd3091f8.png)
-
 - **Frontend**:
   - Exposed via port `5173` from the internet
 - **Application Load Balancer (ALB)**:
