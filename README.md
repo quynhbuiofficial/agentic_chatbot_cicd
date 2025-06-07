@@ -73,7 +73,7 @@ This will:
 Create VPC, public/private subnets
 Attach NAT and Internet Gateways
 Provision EC2 instance
-Set up S3 backend
+Set up S3, ALB
 
 ### 3. Configure GitHub Secrets
 Settings → Secrets and variables → Actions → New repository secret
