@@ -59,10 +59,11 @@ Trong GitHub repo, bạn cần cấu hình các **Secrets** sau để CI/CD ho�
 ```bash
 git clone https://github.com/yourusername/agentic_chatbot_cicd.git
 cd agentic_chatbot_cicd
+```
 
 ### 2. Initialize Terraform Infrastructure
 
-``` bash
+``` 
 cd terraform
 terraform init
 terraform apply
