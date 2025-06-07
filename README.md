@@ -66,6 +66,7 @@ cd agentic_chatbot_cicd
 cd terraform
 terraform init
 terraform apply
+```
 
 This will:
 Create VPC, public/private subnets
