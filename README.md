@@ -62,11 +62,11 @@ cd agentic_chatbot_cicd
 
 ### 2. Initialize Terraform Infrastructure
 
-```
+``` bash
 cd terraform
 terraform init
 terraform apply
-```
+
 This will:
 Create VPC, public/private subnets
 Attach NAT and Internet Gateways
