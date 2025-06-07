@@ -16,6 +16,7 @@ This project automates the CI/CD pipeline to deploy a full-stack **Agentic Chatb
 - **Public Subnet**: `10.0.0.0/22`
 - **Private Subnet-01**: `10.0.4.0/22`
 - **Private Subnet-02**: `10.0.8.0/22`
+- **Application Load Balancer**: Distributes traffic evenly across backend services
 - **NAT Gateway**: Allow private subnets to access the internet securely
 - **S3 Bucket**: Store Terraform remote backend state
 
