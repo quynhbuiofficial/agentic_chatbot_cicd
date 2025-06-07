@@ -39,16 +39,16 @@ This project automates the CI/CD pipeline to deploy a full-stack **Agentic Chatb
 
 Trong GitHub repo, bạn cần cấu hình các **Secrets** sau để CI/CD hoạt động:
 
-| Secret Name             | Description                                |
-|-------------------------|--------------------------------------------|
-| `AWS_ACCESS_KEY_ID`     | AWS Access Key ID dùng để truy cập AWS API |
-| `AWS_SECRET_ACCESS_KEY` | AWS Secret Access Key                      |
-| `DOCKER_HUB_TOKEN`      | Token để đẩy/pull image từ Docker Hub      |
-| `KEYPAIR_PRIVATE`       | Private key (dạng `.pem`) để SSH vào EC2   |
-| `KEYPAIR_PUBLIC`        | Public key tương ứng cho EC2 Key Pair       |
-| `LANGFUSE_PUBLIC_KEY`   | Public API Key của Langfuse                |
-| `LANGFUSE_SECRET_KEY`   | Secret API Key của Langfuse                |
-| `LEQUYNHLE_GITHUB_TOKEN`| GitHub token (Personal Access Token) để truy cập GHCR và API |
+| Secret Name              | Description                                                     |
+|--------------------------|-----------------------------------------------------------------|
+| `AWS_ACCESS_KEY_ID`      | AWS Access Key ID used to access AWS API                        |
+| `AWS_SECRET_ACCESS_KEY`  | AWS Secret Access Key                                           |
+| `DOCKER_HUB_TOKEN`       | Token used to push/pull Docker images from Docker Hub           |
+| `KEYPAIR_PRIVATE`        | Private key (`.pem` format) used for SSH access to EC2          |
+| `KEYPAIR_PUBLIC`         | Corresponding public key for the EC2 Key Pair                   |
+| `LANGFUSE_PUBLIC_KEY`    | Langfuse Public API Key                                         |
+| `LANGFUSE_SECRET_KEY`    | Langfuse Secret API Key                                         |
+| `LEQUYNHLE_GITHUB_TOKEN` | GitHub Personal Access Token used to access LLM for Chatbot |
 
 ---
 
