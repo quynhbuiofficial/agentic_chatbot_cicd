@@ -79,7 +79,7 @@ if __name__ == "__main__":
     es = get_es_client(max_retries=2, sleep_time=1)
     print("[LOG]: DONE")
     hybrid_search_class = HybridSearch(es=es)
-    uvicorn.run(mcp.sse_app(), host='0.0.0.0', port=1234)
+    uvicorn.run(mcp.sse_app(), host='127.0.0.1', port=1234)
 
 # async def main():
 #     print("GGGG")

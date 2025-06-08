@@ -1,5 +1,5 @@
 mcp[cli]
-langfuse
+langfuse==2.60.8
 fastapi
 uvicorn
 elasticsearch==8.17.1

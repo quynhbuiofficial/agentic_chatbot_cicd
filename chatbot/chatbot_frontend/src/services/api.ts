@@ -25,7 +25,7 @@ export const chatService = {
   // sendMessage là api call nhỏ bên trong chatService
   sendMessage: async (request: ChatRequest) => {
     try {
-      console.log("--API_BASE_URL: ", API_BASE_URL);
+      // console.log("--API_BASE_URL: ", API_BASE_URL);
       const response = await api.post("/chat", request);
       console.log("api.ts: ", response);
       return response.data.trim();

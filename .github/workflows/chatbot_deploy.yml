@@ -303,7 +303,7 @@ jobs:
         sudo docker run -d --name chatbot_backend -p 9999:9999 -e ELASTICSEARCH_URL=http://${{ env.ELASTICSEARCH_IP }}:9200 -e NEO4J_URL=bolt://${{ env.NEO4J_IP }}:7687 -e MCP_SERVER_URL=http://${{ env.MCP_IP }}:1234/sse \
         -e MODEL_CHAT_INPUT_COST=0.0001 -e MODEL_CHAT_OUTPUT_COST=0.0001 -e NEO4J_USERNAME=neo4j -e NEO4J_PASSWORD=123456789 \
         -e LANGFUSE_PUBLIC_KEY=${{ secrets.LANGFUSE_PUBLIC_KEY }} -e LANGFUSE_SECRET_KEY=${{ secrets.LANGFUSE_SECRET_KEY }} -e LANGFUSE_BASEURL=https://cloud.langfuse.com \
-        -e GITHUB_TOKEN=${{secrets.LEQUYNHLE_GITHUB_TOKEN}} -e MODEL_NAME=gpt-4o quynhsydaole/chatbot_backend:latest
+        -e GITHUB_TOKEN=${{secrets.SQ2K3_GITHUB_TOKEN}} -e MODEL_NAME=gpt-4o quynhsydaole/chatbot_backend:latest
 
         INNER_EOF
         EOF

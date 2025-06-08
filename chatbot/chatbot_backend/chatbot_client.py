@@ -21,7 +21,7 @@ from autogen_ext.tools.mcp import SseServerParams, mcp_server_tools
 import os
 from get_more_legal_infomation import get_more_legal_information
 
-import re
+import json
 from langchain_neo4j import Neo4jGraph
 from elasticsearch_ne import HybridSearch
 
@@ -32,10 +32,9 @@ class ChatBot:
         self.index4memoryAgent = IndexData(es=es)
         self.index4memoryAgent._delete_index(INDEX_NAME=INDEX_NAME_MEMORY)
         self.client = AzureAIChatCompletionClient(
-            model='gpt-4o',
+            model=os.environ.get("MODEL_NAME"),
             endpoint="https://models.inference.ai.azure.com",
             credential=AzureKeyCredential(os.environ.get("GITHUB_TOKEN")),
-            # credential=AzureKeyCredential(''),
             model_info={
                 "json_output": True,
                 "function_calling": True,
@@ -46,10 +45,6 @@ class ChatBot:
         )
         print("[LOG]: Connect to Neo4j for getmore term in legal docs")
         self.kg = Neo4jGraph(
-            # url='bolt://neo4j:7687',
-            # url='bolt://localhost:7687',
-            # username='neo4j',
-            # password='123456789'
             url = os.environ.get("NEO4J_URL"),
             username=os.environ.get("NEO4J_USERNAME"),
             password=os.environ.get("NEO4J_PASSWORD"),
@@ -69,14 +64,13 @@ class ChatBot:
                     - Nếu hỏi bình thường thì thực hiện RAG prompt bằng hybrid_search
         """
         context_from_pdf = await self.hybrid_search_class.hybrid_search(query, top_k=3, INDEX_NAME=INDEX_NAME_PDF)
+        # print("context_from_pdf: ", context_from_pdf)
         context_from_pdf = '\n'.join([item['content'] for item in context_from_pdf])
         augmented_query = "Hãy trả lời câu hỏi dựa theo thông tin sau: " + context_from_pdf + '\n Câu hỏi: ' + query
         return augmented_query, context_from_pdf
 
     async def get_agent_tools(self, agent_name: str = None):
         server_params = SseServerParams(
-            # url='http://127.0.0.1:1234/sse',
-            # url='http://mcp_server:1234/sse',
             url=os.environ.get("MCP_SERVER_URL"),
             headers={"Content-Type": "application/json"},
             timeout=30,
@@ -277,12 +271,13 @@ class ChatBot:
         async for message in team.run_stream(task=input): 
             if isinstance(message, ToolCallSummaryMessage) and getattr(message, 'source', None) == 'LawAgent':
                 data = message.content
-                text_4_findmore_legal_docs = re.findall(r"text='(.*?)'", data)
+                data = json.loads(data)
+                text_4_findmore_legal_docs = data[0]["text"]
+                print("DATA Decode: ",text_4_findmore_legal_docs)
                 if len(text_4_findmore_legal_docs) > 0:
                     self.more_information_law = get_more_legal_information(text=text_4_findmore_legal_docs, kg=self.kg)
                 
             if isinstance(message, TaskResult):
-                print("Comunicate complete...: ", message)
                 if message.stop_reason is None:
                     response_list.append("NONE")
             else:
@@ -299,8 +294,6 @@ class ChatBot:
             output_token=completion_tokens,
             cost_input=os.environ.get("MODEL_CHAT_INPUT_COST"),
             cost_output=os.environ.get("MODEL_CHAT_OUTPUT_COST")
-            # cost_input=0.001,
-            # cost_output=0.001,
         )
         
         print("self.more_information_law: ", self.more_information_law)

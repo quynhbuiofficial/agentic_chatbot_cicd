@@ -14,7 +14,6 @@ def get_es_client(max_retries=2, sleep_time=1):
     i = 0
     while i < max_retries:
         try:
-            # es = Elasticsearch("http://localhost:9200")
             es = Elasticsearch(os.environ.get("ELASTICSEARCH_URL"))
             client_info = es.info()
             print("Connected to Elasticsearch! \n")
